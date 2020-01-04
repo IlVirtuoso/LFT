@@ -1,0 +1,31 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Translator",
+            "request": "launch",
+            "mainClass": "Translator",
+            "projectName": "LFT_ae3286ba"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch) - Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Lexer",
+            "request": "launch",
+            "mainClass": "Lexer",
+            "projectName": "LFT_12219da2"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Lexer",
+            "request": "launch",
+            "mainClass": "Lexer",
+            "projectName": "ParserAndAutomata_9e638df9"
+        }
+    ]
+}

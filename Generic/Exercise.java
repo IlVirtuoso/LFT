@@ -38,6 +38,20 @@ public class Exercise {
                 System.out.println("You are of turn T2 or T3");
             else
                 System.out.println("Sorry you are not in either of those turns");
+            break;
+
+        case 3:
+            System.out.print("Digit a sequence of bit: ");
+            query = scan.next();
+            if (multipleParse(query))
+                System.out.println("This Sequence Represent a multiple of 3 in decimal value");
+            else
+                System.out.println("This sequence is not a multiple of 3");
+            break;
+
+        case 4:
+
+            break;
         }
         scan.close();
     }
@@ -166,4 +180,42 @@ public class Exercise {
         return state == 3;
     }
 
+    public static Boolean multipleParse(String q) {
+        int i = 0;
+        int state = 0;
+        while (state >= 0 && i < q.length()) {
+            char ch = q.toLowerCase().charAt(i++);
+            switch (state) {
+            case 0:
+                if (Integer.parseInt(String.valueOf(ch)) == 0)
+                    state = 0;
+                else if (Integer.parseInt(String.valueOf(ch)) == 1)
+                    state = 1;
+                break;
+
+            case 1:
+                if (Integer.parseInt(String.valueOf(ch)) == 1)
+                    state = 3;
+                else if (Integer.parseInt(String.valueOf(ch)) == 0)
+                    state = 2;
+                break;
+
+            case 2:
+                if (Integer.parseInt(String.valueOf(ch)) == 1)
+                    state = 2;
+                else if (Integer.parseInt(String.valueOf(ch)) == 0)
+                    state = 1;
+                break;
+
+            case 3:
+                if (Integer.parseInt(String.valueOf(ch)) == 0)
+                    state = 3;
+                else if (Integer.parseInt(String.valueOf(ch)) == 1)
+                    state = 1;
+                break;
+
+            }
+        }
+        return state == 3;
+    }
 }

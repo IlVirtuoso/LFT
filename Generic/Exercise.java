@@ -218,4 +218,28 @@ public class Exercise {
         }
         return state == 3;
     }
+
+    public static boolean MyNameParse(String q) {
+        int i = 0;
+        int state = 0;
+        while (state >= 0 && i < q.length()) {
+            char ch = q.toLowerCase().charAt(i++);
+            switch (state) {
+            case 0:
+                if (ch == 'm' || ch == 'a' || ch == 't' || ch == 't' || ch == 'e' || ch == 'o')
+                    state = 0;
+                else
+                    state = 1;
+                break;
+
+            case 1:
+                if (ch == 'm' || ch == 'a' || ch == 't' || ch == 't' || ch == 'e' || ch == 'o')
+                    state = 1;
+                else
+                    state = -1;
+                break;
+            }
+        }
+        return state == 0 || state == 1;
+    }
 }

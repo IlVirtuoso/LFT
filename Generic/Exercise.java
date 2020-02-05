@@ -220,26 +220,71 @@ public class Exercise {
     }
 
     public static boolean MyNameParse(String q) {
-        int i = 0;
         int state = 0;
-        while (state >= 0 && i < q.length()) {
-            char ch = q.toLowerCase().charAt(i++);
+        int i = 0;
+
+        while (state >= 0 && i < s.length()) {
+            final char ch = s.charAt(i++);
+
             switch (state) {
             case 0:
-                if (ch == 'm' || ch == 'a' || ch == 't' || ch == 't' || ch == 'e' || ch == 'o')
-                    state = 0;
-                else
+                if (ch == 'p')
                     state = 1;
+                else
+                    state = 6;
                 break;
 
             case 1:
-                if (ch == 'm' || ch == 'a' || ch == 't' || ch == 't' || ch == 'e' || ch == 'o')
-                    state = 1;
+                if (ch == 'a')
+                    state = 2;
+                else
+                    state = 7;
+                break;
+
+            case 2:
+                if (ch == 'o')
+                    state = 3;
+                else
+                    state = 8;
+                break;
+
+            case 3:
+                if (ch == 'l')
+                    state = 4;
+                else
+                    state = 9;
+                break;
+
+            case 6:
+                if (ch == 'a')
+                    state = 7;
                 else
                     state = -1;
                 break;
+
+            case 7:
+                if (ch == 'o')
+                    state = 8;
+                else
+                    state = -1;
+                break;
+
+            case 8:
+                if (ch == 'l')
+                    state = 9;
+                else
+                    state = -1;
+                break;
+
+            case 9:
+                if (ch == 'o')
+                    state = 10;
+                else
+                    state = -1;
+                break;
+
             }
         }
-        return state == 0 || state == 1;
+        return (state == 4 || state == 10);
     }
 }

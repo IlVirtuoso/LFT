@@ -149,7 +149,7 @@ public class Translator {
                 match(Tag.READ);
                 if (look.tag==Tag.ID) {
                     int read_id_addr = st.lookupAddress(((Word)look).lexeme);
-                    if (read_id_addr==-1) {
+                    if (read_id_addr== -1) {
                         read_id_addr = count;
                         st.insert(((Word)look).lexeme,count++);
                     }                    
@@ -202,6 +202,12 @@ public class Translator {
                  expr();
                  expr();
                  code.emit(OpCode.if_icmplt,lnext);
+                 break;
+
+                 case "==":
+                 expr();
+                 expr();
+                 code.emit(OpCode.if_icmpeq,lnext);
                  break;
 
                  case ">":

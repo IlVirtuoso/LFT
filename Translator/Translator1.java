@@ -1,16 +1,15 @@
 import java.io.*;
 
-public class Translator {
+public class Translator1 {
     private Lexer lex;
     private BufferedReader pbr;
     private Token look;
-    private boolean tag_escl = false;
 
     SymbolTable st = new SymbolTable();
     CodeGenerator code = new CodeGenerator();
     int count = 0;
 
-    public Translator(Lexer l, BufferedReader br) {
+    public Translator1(Lexer l, BufferedReader br) {
         lex = l;
         pbr = br;
         move();
@@ -30,7 +29,7 @@ public class Translator {
             if (look.tag != Tag.EOF)
                 move();
         } else
-            error("syntax error");
+            error("syntax error while parsing " + look);
     }
 
     public void prog() {
@@ -45,7 +44,7 @@ public class Translator {
                 System.out.println("IO error\n");
             }
         } else {
-            error("Error in prog");
+            error("Error in start");
         }
     }
 
@@ -62,10 +61,13 @@ public class Translator {
             stat(lnext);
             statlistp(lnext);
             break;
+
         case ')':
+
             break;
+
         default:
-            error("Error in statlistp");
+            error("error in statlistp");
             break;
         }
     }
@@ -77,8 +79,9 @@ public class Translator {
             statp(lnext);
             match(')');
             break;
+
         default:
-            error("Error in stat");
+            error("error in stat after read" + look);
             break;
         }
     }
@@ -96,13 +99,16 @@ public class Translator {
                 match(Tag.ID);
                 expr();
                 code.emit(OpCode.istore, read_id_addr);
-            } else
-                error("Error in stat, Tag.ID");
+            } else {
+                error("error in stat " + look + " unsepected token after assign");
+            }
             break;
+
         case Tag.DO:
             match(Tag.DO);
             statlist(lnext);
             break;
+
         case Tag.COND:
             match(Tag.COND);
             int true_label = code.newLabel();
@@ -113,6 +119,7 @@ public class Translator {
             stat(true_label);
             elseopt(false_label);
             break;
+
         case Tag.WHILE:
             match(Tag.WHILE);
             int cicle_label = lnext;
@@ -125,11 +132,13 @@ public class Translator {
             code.emit(OpCode.GOto, cicle_label);
             code.emitLabel(exit_label);
             break;
+
         case Tag.PRINT:
             match(Tag.PRINT);
             exprlist();
             code.emit(OpCode.invokestatic, 1);
             break;
+
         case Tag.READ:
             match(Tag.READ);
             if (look.tag == Tag.ID) {
@@ -142,10 +151,11 @@ public class Translator {
                 code.emit(OpCode.invokestatic, 0);
                 code.emit(OpCode.istore, read_id_addr);
             } else
-                error("Grammar Error");
+                error("Error in grammar (stat) after read with " + look);
             break;
+
         default:
-            error("Error in statp");
+            error("Error in stat unexpected token" + look + "while parsing");
         }
     }
 
@@ -169,8 +179,9 @@ public class Translator {
             match(')');
             break;
         default:
-            error("Error in bexpr");
+            error("Error in bexpr while parsing " + look);
             break;
+
         }
     }
 
@@ -184,27 +195,39 @@ public class Translator {
                 expr();
                 code.emit(OpCode.if_icmplt, lnext);
                 break;
+
+            case "==":
+                expr();
+                expr();
+                code.emit(OpCode.if_icmpeq, lnext);
+                break;
+
             case ">":
                 expr();
                 expr();
                 code.emit(OpCode.if_icmpgt, lnext);
                 break;
+
             case "<=":
                 expr();
                 expr();
                 code.emit(OpCode.if_icmple, lnext);
                 break;
+
             case ">=":
                 expr();
                 expr();
                 code.emit(OpCode.if_icmpge, lnext);
                 break;
+
             case "<>":
                 expr();
                 expr();
                 code.emit(OpCode.if_icmpne, lnext);
                 break;
+
             }
+
         } else if (look.tag == Tag.AND) {
             match(Tag.AND);
             bexpr(lnext);
@@ -213,36 +236,32 @@ public class Translator {
             match(Tag.OR);
             bexpr(lnext);
             bexpr(lnext);
-        } else if (look.tag == '!') {
-            match('!');
-            tag_escl = true;
-            bexpr(lnext);
-            tag_escl = false;
-        } else if (tag_escl)
-            expr();
-        else {
-            error("Error in bexrprp");
+        } else {
+            error("Error in bexrpr while parsing " + look);
         }
     }
 
     public void expr() {
         switch (look.tag) {
         case Tag.NUM:
-            // ho fatto una modifica, ho cambiato num.num
-            code.emit(OpCode.ldc, Integer.parseInt(((NumberTok) look).lexeme));
+            NumberTok num = (NumberTok) look;
+            code.emit(OpCode.ldc, num.num);
             match(Tag.NUM);
             break;
+
         case Tag.ID:
             code.emit(OpCode.iload, st.lookupAddress(((Word) look).lexeme));
             match(Tag.ID);
             break;
+
         case '(':
             match('(');
             exprp();
             match(')');
             break;
+
         default:
-            error("error in expr");
+            error("error on expr");
             break;
         }
     }
@@ -273,7 +292,7 @@ public class Translator {
             break;
 
         default:
-            error("Error in exprp");
+            error("Error in exprp while parsing: " + look);
         }
     }
 
@@ -285,7 +304,9 @@ public class Translator {
     public void exprlistp() {
         switch (look.tag) {
         case ')':
+
             break;
+
         default:
             expr();
             exprlistp();
@@ -296,15 +317,11 @@ public class Translator {
 
     public static void main(String[] args) {
         Lexer lex = new Lexer();
-        String path = "C:/Users/Mattia/OneDrive - Politecnico di Torino - IT/LFT/LAB/Esercizi/ES2-3.1/pas_prova.pas"; // il
-                                                                                                                      // percorso
-                                                                                                                      // del
-                                                                                                                      // file
-                                                                                                                      // da
-                                                                                                                      // leggere
+        String path = "C:\\Users\\matte\\Desktop\\programmazione\\LFT\\Translator\\try"; // il percorso del file da
+                                                                                         // leggere
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
-            Translator translator = new Translator(lex, br);
+            Translator1 translator = new Translator1(lex, br);
             translator.prog();
             br.close();
         } catch (IOException e) {

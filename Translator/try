@@ -1,26 +1,6 @@
 (do
-
-    (print ( + (/ 10 5) 2 56 3 2 3) 34 35)
-
-    (read x)
-    
-
-    (cond (> x 10)
-        (do
-            (read y)
-        )
-    (else
-        (do
-        (print x 12)
-        (read y)
-        )
-    )
-    )
-    (while (== y 2)
-        (= x(+ x 1))
-    )
-    (print x)
-    (read y)
-    (= y 1236)
-    (print y)
+(read x)
+(cond (|| (< x 10) (&& (> x 20) (< x 30)))
+ (print (+ x 100))
+)
 )

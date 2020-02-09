@@ -1,4 +1,6 @@
 import java.io.*;
+import java.nio.file.Paths;
+import java.nio.file.*;
 
 public class Translator {
     private Lexer lex;
@@ -228,8 +230,8 @@ public class Translator {
     public void expr() {
         switch (look.tag) {
         case Tag.NUM:
-            // ho fatto una modifica, ho cambiato num.num
-            code.emit(OpCode.ldc, Integer.parseInt(((NumberTok) look).lexeme));
+            NumberTok num = (NumberTok) look;
+            code.emit(OpCode.ldc, num.num);
             match(Tag.NUM);
             break;
         case Tag.ID:
@@ -296,12 +298,9 @@ public class Translator {
 
     public static void main(String[] args) {
         Lexer lex = new Lexer();
-        String path = "C:/Users/Mattia/OneDrive - Politecnico di Torino - IT/LFT/LAB/Esercizi/ES2-3.1/pas_prova.pas"; // il
-                                                                                                                      // percorso
-                                                                                                                      // del
-                                                                                                                      // file
-                                                                                                                      // da
-                                                                                                                      // leggere
+        Path currentDir = Paths.get(".");
+        currentDir = currentDir.normalize();
+        String path = currentDir.toAbsolutePath() + "\\Translator\\try";
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
             Translator translator = new Translator(lex, br);

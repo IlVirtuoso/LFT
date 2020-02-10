@@ -44,12 +44,12 @@ L3:
  iload 0
  iload 1
  if_icmpgt L5
+ goto L6
 L5:
  iload 0
  iload 1
  isub 
  istore 0
- goto L6
 L6:
  iload 1
  iload 0

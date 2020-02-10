@@ -110,16 +110,18 @@ public class Translator {
             match(Tag.DO);
             statlist(lnext);
             break;
-        case Tag.COND:
+            
+            case Tag.COND:
             match(Tag.COND);
             int true_label = code.newLabel();
             int false_label = code.newLabel();
             bexpr(true_label);
+            code.emit(OpCode.GOto, false_label);
             code.emitLabel(true_label);
             stat(true_label);
-            code.emit(OpCode.GOto, false_label);
             elseopt(false_label);
             break;
+
         case Tag.WHILE:
             match(Tag.WHILE);
             int cicle_label = lnext;

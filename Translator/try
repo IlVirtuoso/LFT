@@ -1,6 +1,8 @@
 (do
-(read x)
-(cond (|| (< x 10) (&& (> x 20) (< x 30)))
- (print (+ x 100))
-)
+    (read a)
+    (read b)
+    (while (<> a b)
+        (cond (> a b) (= a (- a b)) (else (= b (- b a))))
+    )
+    (print a)
 )

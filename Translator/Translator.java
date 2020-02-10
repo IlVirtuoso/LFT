@@ -1,5 +1,6 @@
 import java.io.*;
 import java.nio.file.Paths;
+
 import java.nio.file.*;
 
 public class Translator {
@@ -52,8 +53,12 @@ public class Translator {
     }
 
     public void statlist(int lnext) {
-        stat(lnext);
-        statlistp(lnext);
+        if (look.tag == '(') {
+            stat(lnext);
+            statlistp(lnext);
+        } else {
+            error("Error in statlist");
+        }
     }
 
     public void statlistp(int lnext) {
@@ -110,9 +115,9 @@ public class Translator {
             int true_label = code.newLabel();
             int false_label = code.newLabel();
             bexpr(true_label);
-            code.emit(OpCode.GOto, false_label);
             code.emitLabel(true_label);
             stat(true_label);
+            code.emit(OpCode.GOto, false_label);
             elseopt(false_label);
             break;
         case Tag.WHILE:
@@ -127,10 +132,28 @@ public class Translator {
             code.emit(OpCode.GOto, cicle_label);
             code.emitLabel(exit_label);
             break;
+
         case Tag.PRINT:
             match(Tag.PRINT);
-            exprlist();
-            code.emit(OpCode.invokestatic, 1);
+            switch (look.tag) {
+            case Tag.NUM:
+                NumberTok num = (NumberTok) look;
+                code.emit(OpCode.ldc, num.num);
+                match(Tag.NUM);
+                code.emit(OpCode.invokestatic, 1);
+                break;
+
+            case Tag.ID:
+                code.emit(OpCode.iload, st.lookupAddress(((Word) look).lexeme));
+                match(Tag.ID);
+                code.emit(OpCode.invokestatic, 1);
+                break;
+
+            case '(':
+                exprlist(null);
+                code.emit(OpCode.invokestatic, 1);
+                break;
+            }
             break;
         case Tag.READ:
             match(Tag.READ);
@@ -149,6 +172,7 @@ public class Translator {
         default:
             error("Error in statp");
         }
+
     }
 
     public void elseopt(int lnext) {
@@ -181,6 +205,10 @@ public class Translator {
             String cond = (((Word) look).lexeme);
             match(Tag.RELOP);
             switch (cond) {
+            case "==":
+                expr();
+                expr();
+                code.emit(OpCode.if_icmpeq, lnext);
             case "<":
                 expr();
                 expr();
@@ -250,11 +278,13 @@ public class Translator {
     }
 
     private void exprp() {
+        String optype;
         switch (look.tag) {
+
         case '+':
             match('+');
-            exprlist();
-            code.emit(OpCode.iadd);
+            optype = "plus";
+            exprlist(optype);
             break;
         case '-':
             match('-');
@@ -264,8 +294,8 @@ public class Translator {
             break;
         case '*':
             match('*');
-            exprlist();
-            code.emit(OpCode.imul);
+            optype = "times";
+            exprlist(optype);
             break;
         case '/':
             match('/');
@@ -279,20 +309,29 @@ public class Translator {
         }
     }
 
-    public void exprlist() {
-        expr();
-        exprlistp();
+    public void exprlist(String optype) {
+        if (look.tag == '(' || look.tag == Tag.NUM || look.tag == Tag.ID) {
+            expr();
+            exprlistp(optype);
+        } else {
+            error("Error in exprlist");
+        }
     }
 
-    public void exprlistp() {
+    public void exprlistp(String optype) {
         switch (look.tag) {
         case ')':
             break;
+
         default:
             expr();
-            exprlistp();
+            if (optype.equals("plus")) {
+                code.emit(OpCode.iadd);
+            } else if (optype.equals("times")) {
+                code.emit(OpCode.imul);
+            }
+            exprlistp(optype);
             break;
-
         }
     }
 

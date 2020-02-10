@@ -1,0 +1,51 @@
+First
+F(prog) = {(}
+F(statlist) = {(}
+f(stat) = {(}
+F(statp) = {=,cond,while,do,print}
+F(esleopt) = {(,epsilon}
+f(bexpr) = {RELOP}
+f(expr) = {num,ID,(}
+f(exprp) = {+,-,*,/}
+f(exprlist) = {NUM,ID,(}
+f(exprlistp) = {epsilon,(}
+
+Follow
+fw(prog) = {$}
+fw(statlist) = {)}
+fw (statlistp) = {),$}
+fw(stat) = {$,)}
+fw(statp) = {)}
+fw(esleopt) = {)}
+fw(bexpr) = {(}
+fw(bexprp) = {)}
+fw(expr) = {)}
+fw(exprp) = {)}
+fw(exprlistp) = {),$}
+
+GUI
+Gui(prog --> stat EOF) = {(}
+Gui(statlist --> stat statlistp) = {(}
+Gui(statlistp --> stat statlistp) = {(}
+Gui(statlistp --> epsilon) = {)}
+Gui(stat --> (statp)) = {(}
+Gui(statp --> = ID expr) = {=}[
+    -->cond bexpr stat esleopt = {cond}
+    -->while bexpr stat = {while}
+    --> do statlist = {do}
+    --> print exprlist = {print}
+    --> read ID = {read}
+]
+
+gui(esleopt --> (else stat)) = {(}[
+    --> elseopt = {(,)}
+]
+
+gui(bexpr --> (bexprp)) = {(}
+gui(bexprp --> RELOP expr expr) = {RELOP}
+gui(epxr --> NUM) = {NUM}
+gui(expr --> (exprp)) == {(}
+gui(expr --> + exprlist) = {+} [stessa cosa per *,-,/]
+gui(exprlist --> expr exprlistp) = {NUM,ID,(}
+gui(exprlistp --> expr exprlistp) = {NUM,ID,(}
+gui(exprlist --> epsilon) = {)}

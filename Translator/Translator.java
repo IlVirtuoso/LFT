@@ -116,24 +116,24 @@ public class Translator {
             match(Tag.COND);
             int true_label = code.newLabel();
             int false_label = code.newLabel();
-            bexpr(true_label);
-            code.emit(OpCode.GOto, false_label);
+            bexpr(true_label,false_label);
             code.emitLabel(true_label);
+            lnext = code.newLabel();
             stat(lnext);
+            code.emit(OpCode.GOto,lnext);
             code.emitLabel(false_label);
             elseopt(lnext);
+            code.emitLabel(lnext);
             break;
 
         case Tag.WHILE:
             match(Tag.WHILE);
-            int cicle_label = lnext;
             int while_label = code.newLabel();
             int exit_label = code.newLabel();
-            bexpr(while_label);
-            code.emit(OpCode.GOto, exit_label);
+            bexpr(while_label,exit_label);
             code.emitLabel(while_label);
             stat(while_label);
-            code.emit(OpCode.GOto, cicle_label);
+            code.emit(OpCode.GOto, lnext);
             code.emitLabel(exit_label);
             break;
 
@@ -185,16 +185,14 @@ public class Translator {
             match(Tag.ELSE);
             stat(lnext);
             match(')');
-        } else {
-            code.emitLabel(lnext);
-        }
+        } 
     }
 
-    public void bexpr(int lnext) {
+    public void bexpr(int ltrue, int lfalse) {
         switch (look.tag) {
         case '(':
             match('(');
-            bexprp(lnext);
+            bexprp(ltrue,lfalse);
             match(')');
             break;
         default:
@@ -203,7 +201,7 @@ public class Translator {
         }
     }
 
-    public void bexprp(int lnext) {
+    public void bexprp(int ltrue, int lfalse) {
         if (look.tag == Tag.RELOP) {
             String cond = (((Word) look).lexeme);
             match(Tag.RELOP);
@@ -211,55 +209,57 @@ public class Translator {
             case "==":
                 expr();
                 expr();
-                code.emit(OpCode.if_icmpeq, lnext);
+                code.emit(OpCode.if_icmpeq, ltrue);
+                code.emit(OpCode.GOto,lfalse);
             case "<":
                 expr();
                 expr();
-                code.emit(OpCode.if_icmplt, lnext);
+                code.emit(OpCode.if_icmplt, ltrue);
+                code.emit(OpCode.GOto,lfalse);
                 break;
             case ">":
                 expr();
                 expr();
-                code.emit(OpCode.if_icmpgt, lnext);
+                code.emit(OpCode.if_icmpgt, ltrue);
+                code.emit(OpCode.GOto,lfalse);
                 break;
             case "<=":
                 expr();
                 expr();
-                code.emit(OpCode.if_icmple, lnext);
+                code.emit(OpCode.if_icmple, ltrue);
+                code.emit(OpCode.GOto,lfalse);
                 break;
             case ">=":
                 expr();
                 expr();
-                code.emit(OpCode.if_icmpge, lnext);
+                code.emit(OpCode.if_icmpge, ltrue);
+                code.emit(OpCode.GOto,lfalse);
                 break;
             case "<>":
                 expr();
                 expr();
-                code.emit(OpCode.if_icmpne, lnext);
+                code.emit(OpCode.if_icmpne, ltrue);
+                code.emit(OpCode.GOto,lfalse);
                 break;
             }
         } else if (look.tag == Tag.AND) {
             match(Tag.AND);
             int true_label = code.newLabel();
-            bexpr(true_label);
+            bexpr(true_label,lfalse);
             code.emitLabel(true_label);
-            bexpr(lnext);
+            bexpr(ltrue,lfalse);
             
 
         } else if (look.tag == Tag.OR) {
             match(Tag.OR);
             int false_label = code.newLabel();
-            bexpr(lnext);
-            code.emit(OpCode.GOto,false_label);
+            bexpr(ltrue,false_label);
             code.emitLabel(false_label);
-            bexpr(lnext);
+            bexpr(ltrue,false_label);
         } 
         else if(look.tag == '!'){
             match('!');
-            int false_label = code.newLabel();
-            code.emitLabel(false_label);
-            bexpr(false_label);
-            code.emit(OpCode.GOto,lnext);
+            
         }
         else {
             error("Error in bexrprp");
@@ -351,7 +351,7 @@ public class Translator {
         Lexer lex = new Lexer();
         Path currentDir = Paths.get(".");
         currentDir = currentDir.normalize();
-        String path = currentDir.toAbsolutePath() + "\\Translator\\try";
+        String path = currentDir.toAbsolutePath() + "\\Translator\\euclid";
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
             Translator translator = new Translator(lex, br);

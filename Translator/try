@@ -1,4 +1,4 @@
 (do
 (read a)
-(print (+ a))
+(print (+(*3) a 3))
 )

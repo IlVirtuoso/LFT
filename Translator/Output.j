@@ -33,7 +33,11 @@
  invokestatic Output/read()I
  istore 0
 L1:
+ ldc 3
  iload 0
+ iadd 
+ ldc 3
+ iadd 
  invokestatic Output/print(I)V
 L0:
  return

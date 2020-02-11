@@ -327,7 +327,8 @@ public class Translator {
 
         default:
             expr();
-            if (optype.equals("plus")) {
+            if(optype == null){}
+            else if (optype.equals("plus")) {
                 code.emit(OpCode.iadd);
             } else if (optype.equals("times")) {
                 code.emit(OpCode.imul);

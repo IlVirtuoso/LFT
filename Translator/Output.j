@@ -35,15 +35,16 @@
 L1:
  iload 0
  ldc 10
- if_icmplt L4
+ if_icmplt L2
+ goto L4
 L4:
  iload 0
  ldc 20
- if_icmpgt L4
+ if_icmpgt L5
 L5:
  iload 0
  ldc 30
- if_icmplt L4
+ if_icmplt L2
  goto L3
 L2:
  iload 0
@@ -51,7 +52,7 @@ L2:
  iadd 
  invokestatic Output/print(I)V
 L3:
-L3:
+L1:
 L0:
  return
 .end method

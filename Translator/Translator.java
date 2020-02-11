@@ -1,6 +1,8 @@
 import java.io.*;
 import java.nio.file.Paths;
 
+
+
 import java.nio.file.*;
 
 public class Translator {
@@ -117,9 +119,9 @@ public class Translator {
             bexpr(true_label);
             code.emit(OpCode.GOto, false_label);
             code.emitLabel(true_label);
-            stat(true_label);
+            stat(lnext);
             code.emitLabel(false_label);
-            elseopt(false_label);
+            elseopt(lnext);
             break;
 
         case Tag.WHILE:
@@ -239,16 +241,18 @@ public class Translator {
         } else if (look.tag == Tag.AND) {
             match(Tag.AND);
             int true_label = code.newLabel();
-            bexpr(lnext);
+            bexpr(true_label);
             code.emitLabel(true_label);
             bexpr(lnext);
+            
 
         } else if (look.tag == Tag.OR) {
             match(Tag.OR);
             int false_label = code.newLabel();
-            bexpr(false_label);
+            bexpr(lnext);
+            code.emit(OpCode.GOto,false_label);
             code.emitLabel(false_label);
-            bexpr(false_label);
+            bexpr(lnext);
         } 
         else if(look.tag == '!'){
             match('!');

@@ -33,31 +33,6 @@
  invokestatic Output/read()I
  istore 0
 L1:
- invokestatic Output/read()I
- istore 1
-L2:
- iload 0
- iload 1
- if_icmpne L3
- goto L4
-L3:
- iload 0
- iload 1
- if_icmpgt L5
- goto L6
-L5:
- iload 0
- iload 1
- isub 
- istore 0
-L6:
- iload 1
- iload 0
- isub 
- istore 1
- goto L2
-L4:
-L7:
  iload 0
  invokestatic Output/print(I)V
 L0:

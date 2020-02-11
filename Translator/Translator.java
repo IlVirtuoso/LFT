@@ -118,8 +118,9 @@ public class Translator {
             bexpr(true_label);
             code.emit(OpCode.GOto, false_label);
             code.emitLabel(true_label);
-            stat(true_label);
-            elseopt(false_label);
+            stat(lnext);
+            code.emitLabel(false_label);
+            elseopt(lnext);
             break;
 
         case Tag.WHILE:
@@ -181,7 +182,6 @@ public class Translator {
         if (look.tag == '(') {
             match('(');
             match(Tag.ELSE);
-            code.emitLabel(lnext);
             stat(lnext);
             match(')');
         } else {

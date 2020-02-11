@@ -1,5 +1,7 @@
 import java.util.LinkedList;
 import java.io.*;
+import java.nio.file.Paths;
+import java.nio.file.*;
 
 public class CodeGenerator {
 
@@ -24,7 +26,10 @@ public class CodeGenerator {
     }
 
     public void toJasmin() throws IOException{
-        PrintWriter out = new PrintWriter(new FileWriter("C:\\Users\\matte\\Desktop\\programmazione\\LFT\\Translator\\Output.j"));
+        Path currentDir = Paths.get(".");
+        currentDir = currentDir.normalize();
+        String path = currentDir.toAbsolutePath() + "\\Translator\\output.j";
+        PrintWriter out = new PrintWriter(new FileWriter(path));
         String temp = "";
         temp = temp + header;
         while(instructions.size() > 0){

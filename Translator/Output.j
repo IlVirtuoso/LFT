@@ -33,12 +33,25 @@
  invokestatic Output/read()I
  istore 0
 L1:
- ldc 3
  iload 0
- iadd 
- ldc 3
+ ldc 10
+ if_icmplt L4
+L4:
+ iload 0
+ ldc 20
+ if_icmpgt L4
+L5:
+ iload 0
+ ldc 30
+ if_icmplt L4
+ goto L3
+L2:
+ iload 0
+ ldc 100
  iadd 
  invokestatic Output/print(I)V
+L3:
+L3:
 L0:
  return
 .end method

@@ -7,7 +7,6 @@ public class Translator {
     private Lexer lex;
     private BufferedReader pbr;
     private Token look;
-    private boolean tag_escl = false;
 
     SymbolTable st = new SymbolTable();
     CodeGenerator code = new CodeGenerator();
@@ -118,9 +117,9 @@ public class Translator {
             bexpr(true_label);
             code.emit(OpCode.GOto, false_label);
             code.emitLabel(true_label);
-            stat(lnext);
+            stat(true_label);
             code.emitLabel(false_label);
-            elseopt(lnext);
+            elseopt(false_label);
             break;
 
         case Tag.WHILE:
@@ -239,19 +238,25 @@ public class Translator {
             }
         } else if (look.tag == Tag.AND) {
             match(Tag.AND);
+            int true_label = code.newLabel();
             bexpr(lnext);
+            code.emitLabel(true_label);
             bexpr(lnext);
+
         } else if (look.tag == Tag.OR) {
             match(Tag.OR);
-            bexpr(lnext);
-            bexpr(lnext);
-        } else if (look.tag == '!') {
+            int false_label = code.newLabel();
+            bexpr(false_label);
+            code.emitLabel(false_label);
+            bexpr(false_label);
+        } 
+        else if(look.tag == '!'){
             match('!');
-            tag_escl = true;
-            bexpr(lnext);
-            tag_escl = false;
-        } else if (tag_escl)
-            expr();
+            int false_label = code.newLabel();
+            code.emitLabel(false_label);
+            bexpr(false_label);
+            code.emit(OpCode.GOto,lnext);
+        }
         else {
             error("Error in bexrprp");
         }

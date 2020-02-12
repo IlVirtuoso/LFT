@@ -1,7 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
+import java.nio.file.*;
+import java.nio.file.Paths;
 
 
 
@@ -73,8 +74,9 @@ public class Lexer {
                             state = 1; 
                             peek = ' ';
                         }
-                        else if(peek == -1){
-                            state = 2;
+                        else if(peek ==(char) -1){
+                            System.err.println("Commento aperto non chiuso");
+                            return null;
                         }
                         else{
                             state = 0;
@@ -88,16 +90,24 @@ public class Lexer {
                             state = 2;
                             peek = ' ';
                         }
+                        else if(peek == '*'){
+                            state = 1;
+                            peek = ' ';
+                        }
+                        else if(peek ==(char) -1){
+                            System.err.println("Commento aperto non chiuso");
+                            return null;
+                        }
                         else{
                             state = 0;
                             peek = ' ';
-                        }
+                        }  
                     }
                 }
                 return lexical_scan(br);
             }
             else if(peek == '/'){
-                while(peek != -1 && peek != '\n'){
+                while(peek != (char) -1 && peek != '\n'){
                     peek = ' ';
                     readch(br);
                 }
@@ -245,7 +255,9 @@ public class Lexer {
 		
     public static void main(String[] args) {
         Lexer lex = new Lexer();
-        String path = "./try"; // il percorso del file da leggere
+        Path currentDir = Paths.get(".");
+        currentDir = currentDir.normalize();
+        String path = currentDir.toAbsolutePath() + "\\Translator\\try";
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
             Token tok;

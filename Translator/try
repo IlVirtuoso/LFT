@@ -1,12 +1,12 @@
+
 (do
-    (read x)
-    (read y)
-    (cond (== x y) (print (* x x))) /*prova commento*/
-    (cond (> x y) (print x) (else (print y)))
-    (while (> x 0) 
-        (do
-            (= x (- x 1))
-            (print x)
-        )
+    (= _x1 21)
+    (= _y1 49)
+    (while (<> _x1 _y1)
+    (cond (< _x1 _y1) (= _y1 (- _y1 _x1)) (else (= _x1 (- _x1 _y1))))   
     )
+    (print _x1) 
+    
 )
+//ciao
+/**

@@ -350,7 +350,7 @@ public class Translator {
         Lexer lex = new Lexer();
         Path currentDir = Paths.get(".");
         currentDir = currentDir.normalize();
-        String path = currentDir.toAbsolutePath() + "\\Translator\\euclid";
+        String path = currentDir.toAbsolutePath() + "\\Translator\\try";
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
             Translator translator = new Translator(lex, br);

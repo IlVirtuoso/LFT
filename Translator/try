@@ -1,7 +1,7 @@
 (do
     (read x)
     (read y)
-    (cond (== x y) (print x))
+    (cond (== x y) (print (* x x))) /*prova commento*/
     (cond (> x y) (print x) (else (print y)))
     (while (> x 0) 
         (do

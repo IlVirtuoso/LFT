@@ -249,8 +249,6 @@ public class Translator {
             bexpr(true_label,lfalse);
             code.emitLabel(true_label);
             bexpr(ltrue,lfalse);
-            
-
         } else if (look.tag == Tag.OR) {
             match(Tag.OR);
             int false_label = code.newLabel();
@@ -259,8 +257,8 @@ public class Translator {
             bexpr(ltrue,false_label);
         } 
         else if(look.tag == '!'){
-            match('!');
-            
+            match('!');   
+            bexpr(lfalse, ltrue);
         }
         else {
             error("Error in bexrprp");
@@ -352,7 +350,7 @@ public class Translator {
         Lexer lex = new Lexer();
         Path currentDir = Paths.get(".");
         currentDir = currentDir.normalize();
-        String path = currentDir.toAbsolutePath() + "\\Translator\\try";
+        String path = currentDir.toAbsolutePath() + "\\Translator\\euclid";
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
             Translator translator = new Translator(lex, br);

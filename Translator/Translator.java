@@ -211,6 +211,7 @@ public class Translator {
                 expr();
                 code.emit(OpCode.if_icmpeq, ltrue);
                 code.emit(OpCode.GOto,lfalse);
+                break;
             case "<":
                 expr();
                 expr();
@@ -351,7 +352,7 @@ public class Translator {
         Lexer lex = new Lexer();
         Path currentDir = Paths.get(".");
         currentDir = currentDir.normalize();
-        String path = currentDir.toAbsolutePath() + "\\Translator\\euclid";
+        String path = currentDir.toAbsolutePath() + "\\Translator\\try";
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
             Translator translator = new Translator(lex, br);
